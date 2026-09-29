@@ -30,4 +30,26 @@ export class AuthService {
 
 		return { accessToken, refreshToken };
 	}
+
+	async refreshToken(db: D1Database, jwtSecret: string, refreshToken: string): Promise<RefreshResponseDto>{
+		const session = await this.sessionRepository.findByRefreshToken(db, refreshToken);
+
+		if(!session) throw new Error("Invalid refresh token");
+
+		if(new Date(session.expires_at) < new Date()) throw new Error("Invalid or expired Refresh Token");
+
+		if(session.revoked) throw new Error("User not found");
+
+		const newRefreshToken = generateUUID();
+
+		const expiresAt = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString();
+
+		await this.sessionRepository.revokeSession(db, refreshToken);
+
+		await this.sessionRepository.createSession(db, session.user_id, newRefreshToken, expiresAt);
+
+		const accessToken = await generateJwt({ userId: user.id, roleId: user.role_id }, jwtSecret);
+
+		return { accessToken, refreshToken: newRefreshToken };
+	}
 }
