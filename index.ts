@@ -2,8 +2,8 @@
 
 import { Hono } from "hono";
 import { Env } from "./src/types/env";
-import authRoutes from "./src/routes/auth.routes";
-import usersRoutes from "./src/routes/users.routes";
+import authRoutes from "./src/auth/routes/auth.routes";
+import usersRoutes from "./src/users/routes/users.routes";
 
 const app = new Hono<Env>();
 

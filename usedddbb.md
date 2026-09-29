@@ -11,3 +11,7 @@
 ## VER EL COMANDO CREATE TABLE EXACTO DE UNA TABLA
 
 - bunx wrangler d1 execute tlacualcalli-db --local --command="SELECT sql FROM sqlite_master WHERE type='table' AND name='tc_users';"
+
+## PONER EL USO DE LA BASE DE DATOS EN LOCAL Y NO EN REMOTE
+
+- bunx wrangler d1 migrations apply tlacualcalli-db --local

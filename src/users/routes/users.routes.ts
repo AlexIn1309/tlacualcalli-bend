@@ -2,8 +2,8 @@
 
 import { Hono } from "hono";
 
-import { authMiddleware } from "../middleware/auth.middleware";
-import { roleMiddleware } from "../middleware/role.middleware";
+import { authMiddleware } from "../../middleware/auth.middleware";
+import { roleMiddleware } from "../../middleware/role.middleware";
 
 const users = new Hono();
 

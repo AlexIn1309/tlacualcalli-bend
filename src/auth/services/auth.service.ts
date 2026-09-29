@@ -5,7 +5,7 @@ import { generateJwt } from "../../utils/jwt";
 import { SessionRepository } from "../repositories/session.repository";
 import { verifyPassword } from "../../utils/password";
 import { generateUUID } from "../../utils/uuid";
-import { AppError } "../../errors/app-error";
+import { AppError } from "../../errors/app-error";
 
 import type { LoginRequestDto } from "../dto/login-request.dto";
 import type { LoginResponseDto } from "../dto/login-response.dto";
