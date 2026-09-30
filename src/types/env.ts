@@ -1,6 +1,6 @@
 /* Hacer uso de las variables de entorno */
 
-import type { JwrPayLoadDto } from "../dto/auth/jwt-payloads";
+import type { JwtPayloadDto } from "../auth/dto/jwt-payloads";
 
 export interface Env {
 	Bindings: {

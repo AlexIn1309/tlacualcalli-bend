@@ -1,10 +1,9 @@
-/* Entidad para el uso se las session de los usuarios */
-
+//
 export interface UserSessionEntity {
 	id: string;
-	user_id: number;
+	user_id: string;
 	token_hash: string;
 	expires_at: string;
-	created_at: string;
 	revoked_at: string | null;
+	created_at: string;
 }

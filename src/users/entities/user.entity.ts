@@ -1,10 +1,8 @@
-/* Entidad para el uso del usuario */
-
 export interface UserEntity {
-	id: number;
+	id: string;
+	email: string;
 	username: string;
 	password_hash: string;
-	email: string;
 	name: string;
 	last_name: string;
 	phone: string | null;

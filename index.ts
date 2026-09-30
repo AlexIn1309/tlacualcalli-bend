@@ -10,4 +10,6 @@ const app = new Hono<Env>();
 app.route("/auth", authRoutes);
 app.route("/users", usersRoutes);
 
+console.log("INICIANDO TU APP");
+
 export default app;

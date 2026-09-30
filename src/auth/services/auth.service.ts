@@ -16,7 +16,7 @@ export class AuthService {
 		const user = await this.userRepository.findByUsername(db,loginRequest.username);
 		if(!user)throw new AppError("Invalid username or password", 401);
 
-		const validPassword = await verifyPassword(loginRequest.password, user.passwor_hash);
+		const validPassword = await verifyPassword(loginRequest.password, user.password_hash);
 
 		if(!validPassword) throw new Error("Invalid Username or Password");
 
@@ -26,7 +26,7 @@ export class AuthService {
 
 		await this.sessionRepository.createSession(db, user.id, refreshToken, expiresAt);
 
-		const accessToken = await generateJwt({ userId: user.id, roleId: user.role_id }, jwtSecret);
+		const accessToken = await generateJwt({ userId: user.id, roleId: 1 }, jwtSecret);
 
 		return { accessToken, refreshToken };
 	}
@@ -38,7 +38,7 @@ export class AuthService {
 
 		if(new Date(session.expires_at) < new Date()) throw new Error("Invalid or expired Refresh Token");
 
-		if(session.revoked) throw new Error("User not found");
+		if(session.revoked_at) throw new Error("Session revoked");
 
 		const newRefreshToken = generateUUID();
 
@@ -48,7 +48,7 @@ export class AuthService {
 
 		await this.sessionRepository.createSession(db, session.user_id, newRefreshToken, expiresAt);
 
-		const accessToken = await generateJwt({ userId: user.id, roleId: user.role_id }, jwtSecret);
+		const accessToken = await generateJwt({ userId: session.user_id, roleId: 1 }, jwtSecret);
 
 		return { accessToken, refreshToken: newRefreshToken };
 	}
