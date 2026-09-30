@@ -3,6 +3,9 @@
 import type { UserEntity } from "../entities/user.entity";
 export class UserRepository {
 	async findByUsername(db: D1Database, username: string): Promise<UserEntity | null>{
+		console.log("[REPO] Buscando usuario por username:", username);
+		console.log("[REPO] Ejecutando query: SELECT * FROM tc_users WHERE username = ?");
+
 		const result = await db
 			.prepare("SELECT * FROM tc_users WHERE username = ?")
 			.bind(username)

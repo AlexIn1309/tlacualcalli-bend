@@ -13,21 +13,44 @@ import type { LoginResponseDto } from "../dto/login-response.dto";
 export class AuthService {
 	constructor(private readonly userRepository: UserRepository, private readonly sessionRepository: SessionRepository){}
 	async login(db: D1Database, jwtSecret: string, loginRequest: LoginRequestDto): Promise<LoginResponseDto>{
+		console.log("[SERVICE] === Iniciando login ===");
+		console.log("[SERVICE] Username:", loginRequest.username);
+
+		console.log("[SERVICE] Buscando usuario en BD...");
 		const user = await this.userRepository.findByUsername(db,loginRequest.username);
-		if(!user)throw new AppError("Invalid username or password", 401);
+		console.log("[SERVICE] Usuario encontrado:", user ? "SÍ" : "NO");
+		if(user) console.log("[SERVICE] Usuario:", JSON.stringify(user));
 
+		if(!user){
+			console.log("[SERVICE] Usuario no encontrado - lanzando AppError 401");
+			throw new AppError("Invalid username or password", 401);
+		}
+
+		console.log("[SERVICE] Verificando contraseña...");
 		const validPassword = await verifyPassword(loginRequest.password, user.password_hash);
+		console.log("[SERVICE] Contraseña válida:", validPassword ? "SÍ" : "NO");
 
-		if(!validPassword) throw new Error("Invalid Username or Password");
+		if(!validPassword){
+			console.log("[SERVICE] Contraseña inválida - lanzando Error");
+			throw new Error("Invalid Username or Password");
+		}
 
+		console.log("[SERVICE] Generando refresh token...");
 		const refreshToken = generateUUID();
+		console.log("[SERVICE] Refresh token generado:", refreshToken);
 
 		const expiresAt = new Date(Date.now() + 7 * 24 * 60 * 1000).toISOString();
+		console.log("[SERVICE] Expira en:", expiresAt);
 
+		console.log("[SERVICE] Creando sesión en BD...");
 		await this.sessionRepository.createSession(db, user.id, refreshToken, expiresAt);
+		console.log("[SERVICE] Sesión creada exitosamente");
 
+		console.log("[SERVICE] Generando access token (JWT)...");
 		const accessToken = await generateJwt({ userId: user.id, roleId: 1 }, jwtSecret);
+		console.log("[SERVICE] Access token generado:", accessToken.substring(0, 50) + "...");
 
+		console.log("[SERVICE] === Login exitoso ===");
 		return { accessToken, refreshToken };
 	}
 
